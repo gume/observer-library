@@ -4,3 +4,6 @@ description: >-
   Analysis tools (code + tests) and skills (recipes) for the heating observer:
   generic, written against time series and roles, not against one house's
   sensors, so they can be shared between houses.
+# Where releases are published: observers check it for newer versions.
+repository: gume/observer-library
+tag_prefix: v

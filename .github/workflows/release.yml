@@ -1,0 +1,39 @@
+# Release: push a tag v<version> matching library.yaml.
+# Checks every manifest, runs every tool's tests, builds the pack and publishes
+# a GitHub Release with it (observers import it from the release URL).
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Version matches the tag
+        run: |
+          version=$(sed -n 's/^version: *//p' library.yaml)
+          test "v$version" = "$GITHUB_REF_NAME" || { echo "library.yaml version $version does not match $GITHUB_REF_NAME"; exit 1; }
+          echo "VERSION=$version" >> "$GITHUB_ENV"
+      - name: Checks and tests
+        run: |
+          pip install -q numpy pandas scipy matplotlib pytest pyyaml
+          python scripts/check.py
+      - name: Pack
+        run: |
+          ./scripts/pack.sh "observer-library-$VERSION.tgz"
+          awk "/^## $VERSION/{f=1;next} /^## /{f=0} f" CHANGELOG.md > notes.md
+      - name: GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" "observer-library-$VERSION.tgz" \
+            --title "observer-library $VERSION" --notes-file notes.md

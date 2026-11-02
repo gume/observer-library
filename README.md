@@ -35,12 +35,27 @@ flags are bound to the content hash of an item.
 
   Edits are live; house items of the observer (written by agents) take
   precedence over items of the same name here.
-* **As a pack:** `observer library import observer-library-0.2.0.tgz` (or
-  the portal's Library tab); build the archive with `scripts/pack.sh`.
+* **As a pack from a release** (deployed observers): the Library tab's
+  *Import from URL*, or `observer library import
+  https://github.com/gume/observer-library/releases/download/v0.2.0/observer-library-0.2.0.tgz`.
+  Observers check this repository's releases (`repository` in
+  `library.yaml`) and offer newer versions with a one-click install.
+* **As a local pack:** `observer library import observer-library-0.2.0.tgz`;
+  build it with `scripts/pack.sh`.
 * **Bringing items back:** export them from the observer (`observer library
   export --item tools/<name> -o x.tgz`, or the portal), unpack into this
   repository, raise the versions, update the changelog, run the checks,
   commit.
+
+## Releasing
+
+Raise `version` in `library.yaml` (and the items' own versions that
+changed), add a CHANGELOG entry, run the checks, commit, then
+
+```bash
+git tag -a v<version> -m "observer-library <version>"
+git push origin main v<version>     # the workflow checks, tests, packs and publishes the GitHub Release
+```
 
 ## Checks
 
