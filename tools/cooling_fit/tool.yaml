@@ -1,0 +1,21 @@
+name: cooling_fit
+version: 1
+purpose: >-
+  How fast a room loses heat when it is not heated: fits Newton's cooling
+  dT/dt = -(T - T_out)/tau + g to the periods without heating, giving the
+  time constant tau (hours; larger = better insulated / more thermal mass),
+  the loss rate 1/tau, the free gains g (sun, people, appliances, neighbours,
+  K/h) and the expected cooling at a given indoor-outdoor difference. Compare
+  rooms with it, or the same room before and after a change.
+needs: a room temperature, an outdoor temperature, and optionally a mask of "not heated" times (heating off, pumps off)
+inputs:
+- {name: room, type: series, description: "room temperature", required: true}
+- {name: outdoor, type: series, description: "outdoor temperature (or the temperature of the space the room loses heat to)", required: true}
+- {name: mask, type: series, description: "optional boolean/0-1 series: True where the room is NOT heated; only whole resample bins fully inside are used", required: false, default: null}
+- {name: resample, type: string, description: "analysis grid", required: false, default: 15min}
+- {name: smooth_min, type: number, description: "smoothing window for the derivative (minutes)", required: false, default: 60}
+- {name: min_diff, type: number, description: "use only times with room - outdoor of at least this (K): small differences carry little information", required: false, default: 3.0}
+- {name: at_diff, type: number, description: "report the cooling rate at this indoor-outdoor difference (K)", required: false, default: 10.0}
+outputs: {type: dict, description: "tau_h, loss_per_h, gains_K_per_h, cooling_K_per_h_at (at at_diff), r2, points, hours, mean_diff_K; or {error}"}
+requires: [pandas, numpy]
+author: observer (seed, room analysis)

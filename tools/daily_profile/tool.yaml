@@ -1,0 +1,16 @@
+name: daily_profile
+version: 1
+purpose: >-
+  The typical course of a value over the day: mean and the 10th/90th
+  percentiles per hour of the day (optionally per weekday and hour), in a
+  given time zone. Shows when rooms are warmest and coldest, night set-backs,
+  sun effects, the usual heating schedule.
+needs: one time series (any sensor), ideally several days
+inputs:
+- {name: series, type: series, description: "time-indexed values", required: true}
+- {name: by, type: string, description: "hour or weekday_hour", required: false, default: hour}
+- {name: tz, type: string, description: "time zone, e.g. Europe/Budapest", required: false, default: UTC}
+- {name: resample, type: string, description: "grid before grouping (equal weight per time)", required: false, default: 15min}
+outputs: {type: dataframe, description: "index hour (or weekday, hour); columns mean, p10, p90, days"}
+requires: [pandas, numpy]
+author: observer (seed, room analysis)

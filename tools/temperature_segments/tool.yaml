@@ -1,0 +1,20 @@
+name: temperature_segments
+version: 1
+purpose: >-
+  Split a temperature series into rising, falling and flat segments and give
+  each its duration, change and rate (K/h): when a room warms up or cools
+  down and how fast. The series is resampled and smoothed first, so sensor
+  steps (0.1 K deadband) and noise do not create segments; short or small
+  movements are treated as flat, and short flat pauses between movements
+  are joined to the movement before them.
+needs: one temperature time series (a room, a tank, a pipe; any sensor)
+inputs:
+- {name: series, type: series, description: "time-indexed temperature", required: true}
+- {name: resample, type: string, description: "grid for the analysis (pandas offset)", required: false, default: 5min}
+- {name: smooth_min, type: number, description: "centred moving-average window in minutes", required: false, default: 30}
+- {name: rate_threshold, type: number, description: "K/h above which the temperature counts as rising (below minus: falling); slopes are taken over the smoothing window", required: false, default: 0.1}
+- {name: min_duration_min, type: number, description: "rising/falling segments shorter than this become flat", required: false, default: 45}
+- {name: min_change, type: number, description: "rising/falling segments changing less than this (K) become flat", required: false, default: 0.2}
+outputs: {type: dataframe, description: "columns start, end, kind (rising|falling|flat), duration_h, start_value, end_value, delta_K, rate_K_per_h, max_rate_K_per_h"}
+requires: [pandas, numpy]
+author: observer (seed, room analysis)

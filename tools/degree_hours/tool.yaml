@@ -1,0 +1,16 @@
+name: degree_hours
+version: 1
+purpose: >-
+  Heating demand of the weather per day: heating degree-hours below a base
+  temperature (sum of base - outdoor over the hours it is colder), with the
+  daily mean, min and max outdoor temperature and the hours covered. Basis
+  for comparing days, normalising energy use or burner hours, and the
+  heating curve.
+needs: an outdoor temperature series
+inputs:
+- {name: outdoor, type: series, description: "outdoor temperature", required: true}
+- {name: base, type: number, description: "base temperature (°C) below which heating is needed", required: false, default: 15.0}
+- {name: tz, type: string, description: "time zone for the day boundaries", required: false, default: UTC}
+outputs: {type: dataframe, description: "index date; columns mean, min, max, degree_hours, coverage_h"}
+requires: [pandas, numpy]
+author: observer (seed, room analysis)

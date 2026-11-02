@@ -1,0 +1,20 @@
+name: heatup_events
+version: 1
+purpose: >-
+  How a room responds to each heating start: temperature at the start, the
+  dead time until it really starts to rise, the heating rate (K/h) during
+  the rise, the total rise and peak in the window, how long the heating ran,
+  and the time to reach a target. Compares rooms on the same circuit and
+  shows slow or undersized ones.
+needs: a room temperature and an on/off series of the heating that serves the room (pump, valve or demand)
+inputs:
+- {name: room, type: series, description: "room temperature", required: true}
+- {name: heating, type: series, description: "heating on/off (0/1, or numeric with threshold 0.5)", required: true}
+- {name: target, type: any, description: "optional room target: number or series (carried forward)", required: false, default: null}
+- {name: min_off_min, type: number, description: "a start needs at least this many minutes off before it", required: false, default: 60}
+- {name: window_h, type: number, description: "hours after the start to evaluate", required: false, default: 6}
+- {name: rise_threshold, type: number, description: "K above the lowest value after the start that counts as rising", required: false, default: 0.2}
+- {name: smooth_min, type: number, description: "smoothing of the room temperature (minutes)", required: false, default: 20}
+outputs: {type: dataframe, description: "one row per start: start, room_at_start, delay_min, rate_K_per_h, rise_K, peak, heating_h, time_to_target_min (NaN if not reached or no target)"}
+requires: [pandas, numpy]
+author: observer (seed, room analysis)

@@ -1,0 +1,25 @@
+name: room_rc_fit
+version: 1
+purpose: >-
+  A simple heat-balance model of a room, dT/dt = a*h - b*(T - T_out) + c,
+  fitted to recorded data: a = heating gain (how strongly the heating raises
+  the room), b = loss rate (1/b = time constant), c = free gains. h is the
+  heating drive: the supply-minus-room temperature of the radiator/floor
+  circuit (heat_kind supply_temp), a heating power, or an on/off state. Gives
+  the fit quality of a free-run simulation and, for supply temperatures, the
+  supply temperature the room needs to hold a target at given outdoor
+  temperatures, i.e. whether the emitter is big enough.
+needs: room temperature, outdoor temperature and a heating drive (supply temperature of the room's circuit, heating power or on/off)
+inputs:
+- {name: room, type: series, description: "room temperature", required: true}
+- {name: outdoor, type: series, description: "outdoor temperature", required: true}
+- {name: heat, type: series, description: "heating drive: supply temperature, power or on/off (NaN where unknown)", required: true}
+- {name: heat_kind, type: string, description: "supply_temp (h = heat - room, 0 when the circuit is off), power or on_off", required: false, default: supply_temp}
+- {name: active, type: series, description: "optional 0/1 series: circuit flowing (supply_temp only: h = 0 when not flowing)", required: false, default: null}
+- {name: resample, type: string, description: "analysis grid", required: false, default: 15min}
+- {name: smooth_min, type: number, description: "smoothing for the derivative (minutes)", required: false, default: 60}
+- {name: target, type: number, description: "room target for the required-supply table (supply_temp only)", required: false, default: 21.0}
+- {name: design_outdoor, type: list, description: "outdoor temperatures for the required-supply table", required: false, default: [-10, -5, 0, 5, 10]}
+outputs: {type: dict, description: "a, b, c, tau_h, r2 (derivative fit), sim_rmse_K (free-run), points, steady_state_K (room at the mean drive and outdoor), required_supply ({outdoor: supply}, supply_temp only); or {error}"}
+requires: [pandas, numpy]
+author: observer (seed, room analysis)

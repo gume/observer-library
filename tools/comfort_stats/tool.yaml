@@ -1,0 +1,18 @@
+name: comfort_stats
+version: 1
+purpose: >-
+  How well a room keeps its target: per period of the day (e.g. day, night,
+  or all), the hours covered, mean/min/max, the share of time within the
+  band around the target, below and above it, and the degree-hours below the
+  band (how much and how long it was too cold). Periods are hours of the day
+  in the given time zone.
+needs: one room temperature and a target (number or a setpoint series)
+inputs:
+- {name: room, type: series, description: "room temperature", required: true}
+- {name: target, type: any, description: "target: number or series (carried forward)", required: true}
+- {name: band, type: number, description: "half-width of the comfort band (K)", required: false, default: 0.5}
+- {name: periods, type: dict, description: "{name: [start_hour, end_hour]} (end may be < start for overnight); default all day", required: false, default: null}
+- {name: tz, type: string, description: "time zone for the hours, e.g. Europe/Budapest", required: false, default: UTC}
+outputs: {type: dataframe, description: "one row per period: period, hours, mean, min, max, in_band_pct, below_pct, above_pct, degree_hours_below"}
+requires: [pandas, numpy]
+author: observer (seed, room analysis)
