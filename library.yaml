@@ -1,5 +1,5 @@
 name: observer-library
-version: 0.2.0
+version: 0.3.0
 description: >-
   Analysis tools (code + tests) and skills (recipes) for the heating observer:
   generic, written against time series and roles, not against one house's

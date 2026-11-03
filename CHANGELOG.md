@@ -5,7 +5,7 @@ new or improved items, major when an item's inputs or outputs change
 incompatibly. Every item has its own integer version in tool.yaml /
 SKILL.md, raised whenever it changes.
 
-## Unreleased
+## 0.3.0 - 2026-11-03
 
 Mixer control.
 
