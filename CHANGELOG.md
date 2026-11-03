@@ -5,6 +5,18 @@ new or improved items, major when an item's inputs or outputs change
 incompatibly. Every item has its own integer version in tool.yaml /
 SKILL.md, raised whenever it changes.
 
+## Unreleased
+
+Mixer control.
+
+* Tool `control_metrics`: how a control loop performed on recorded data
+  (error to the setpoint, overshoot, time to the setpoint, time in band,
+  valve travel, motor starts and reversals), with the metric names of the
+  observer's simulation.
+* Skill `mixer_what_if`: what-if questions about the mixer control with the
+  controller's own MPC core in simulation (`obs.sim`), validated against the
+  recorded control first. Needs an observer with `obs.sim` (after 0.4.0).
+
 ## 0.2.0 - 2026-11-02
 
 Room analysis.

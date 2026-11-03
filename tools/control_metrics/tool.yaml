@@ -1,0 +1,23 @@
+name: control_metrics
+version: 1
+purpose: >-
+  How well a temperature control loop performed, from recorded series: error
+  to the setpoint (RMSE, also only while the supply could deliver), largest
+  overshoot, time to reach the setpoint after a start or a setpoint change,
+  share of time within the band, and the actuator's effort (travel per hour,
+  motor starts and reversals per hour). The same metric names as the
+  observer's closed-loop simulation (obs.sim), so recorded and simulated
+  control can be compared. For each start event separately (value at the
+  start, minutes to the band): setpoint_tracking.
+needs: the controlled temperature and its setpoint on a common time index; optionally the actuator position (0-100 % or 0-1) and the supply temperature
+inputs:
+- {name: value, type: series, description: "controlled temperature (e.g. mixer forward temperature)", required: true}
+- {name: setpoint, type: series, description: "setpoint over time, or a number", required: true}
+- {name: position, type: series, description: "actuator position, 0-100 % or 0-1 (same index)", required: false, default: null}
+- {name: supply, type: series, description: "supply temperature: rmse_supplied_k counts only times when it exceeds the setpoint by supply_margin_k", required: false, default: null}
+- {name: band_k, type: number, description: "within this distance the setpoint counts as reached", required: false, default: 0.5}
+- {name: supply_margin_k, type: number, description: "margin for rmse_supplied_k", required: false, default: 5.0}
+- {name: move_eps, type: number, description: "position change per sample (in %) below which the actuator counts as still", required: false, default: 0.05}
+outputs: {type: dict, description: "hours, rmse_k, rmse_supplied_k, overshoot_k, time_to_setpoint_s (first), mean_time_to_setpoint_s, setpoints, never_reached, in_band_share, travel_pct_h, starts_h, reversals_h; or {error}"}
+requires: [pandas, numpy]
+author: observer (seed)
